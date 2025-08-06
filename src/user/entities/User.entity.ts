@@ -9,7 +9,7 @@ export class User {
   @Column("varchar", { name: "user_name", comment: "用户名", length: 50 })
   username: string;
 
-  @Column("varchar", { name: "password", comment: "用户密码", length: 20 })
+  @Column("varchar", { name: "password", comment: "用户密码", length: 128 })
   password: string;
 
   @Column("int", { name: "user_type", comment: "用户类型" })

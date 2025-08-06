@@ -22,7 +22,7 @@ export class UserController {
     return this.userService.list(username, pageNo, pageSize);
   }
 
-  @Delete('delete')
+  @Post('delete')
   remove(@Body() findUserDto: FindUserDto) {
     return this.userService.remove(findUserDto.userid);
   }
