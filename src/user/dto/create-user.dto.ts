@@ -25,3 +25,8 @@ export class CreateUserDto {
 
   birthday: Date;
 }
+
+export class LoginUserDto {
+  username: string;
+  password: string;
+}

@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile, BadRequestException, Inject, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto'; 
+import { CreateUserDto, LoginUserDto } from './dto/create-user.dto'; 
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUserDto } from './dto/find-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+// import { JwtService } from '@nestjs/jwt';
+import { LoginGuard } from '../login.guard';
 
 import * as path from 'path';
 import { storage } from 'src/my-file-storage';
@@ -12,12 +14,17 @@ import { storage } from 'src/my-file-storage';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Inject(JwtService)
+  // private jwtService: JwtService;
+
   @Post('add')
+  @UseGuards(LoginGuard)
   add(@Body() createUserDto: CreateUserDto) {
     return this.userService.add(createUserDto);
   }
 
   @Get('list')
+  @UseGuards(LoginGuard)
   async list(
     @Query('pageNo') pageNo: number,
     @Query('pageSize') pageSize: number,
@@ -27,11 +34,13 @@ export class UserController {
   }
 
   @Post('delete')
+  @UseGuards(LoginGuard)
   remove(@Body() findUserDto: FindUserDto) {
     return this.userService.remove(findUserDto.userid);
   }
 
   @Post('upload')
+  @UseGuards(LoginGuard)
   @UseInterceptors(FileInterceptor('file', {
     dest: 'uploads',
     // 指定怎么存储
@@ -54,4 +63,8 @@ export class UserController {
     return file.path.replace('\\', '/');
   }
 
+  @Post('login')
+  async login(@Body() loginDto: LoginUserDto) {
+    return this.userService.findOne(loginDto);
+  }
 }
